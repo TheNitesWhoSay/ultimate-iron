@@ -1,0 +1,32 @@
+{"properties": [
+  {
+    "name": "ultimate-iron.datasource.driver-class-name",
+    "type": "java.lang.String",
+    "description": "A description for 'ultimate-iron.datasource.driver-class-name'"
+  },
+  {
+    "name": "ultimate-iron.datasource.url",
+    "type": "java.lang.String",
+    "description": "A description for 'ultimate-iron.datasource.url'"
+  },
+  {
+    "name": "ultimate-iron.datasource.username",
+    "type": "java.lang.String",
+    "description": "A description for 'ultimate-iron.datasource.username'"
+  },
+  {
+    "name": "ultimate-iron.datasource.password",
+    "type": "java.lang.String",
+    "description": "A description for 'ultimate-iron.datasource.password'"
+  },
+  {
+    "name": "ultimate-iron.endpoint.username",
+    "type": "java.lang.String",
+    "description": "A description for 'ultimate-iron.endpoint.username'"
+  },
+  {
+    "name": "ultimate-iron.endpoint.password",
+    "type": "java.lang.String",
+    "description": "A description for 'ultimate-iron.endpoint.password'"
+  }
+]}
