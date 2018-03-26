@@ -21,3 +21,4 @@ ultimate-iron.datasource:
 ultimate-iron.endpoint:
   username: ${ULTI_ENDPOINT_USERID:unknown}
   password: ${ULTI_ENDPOINT_PASSWORD:unknown}
+logging.file: logs/ultimate-iron.log
