@@ -5,8 +5,8 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.iron.ultimate.model.mapper.ResourceMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -22,26 +22,10 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
 @EnableTransactionManagement
 public class AppConfig {
 
-	@Value("${ultimate-iron.datasource.driverClassName}")
-	private String databaseDriverClassName;
-	
-	@Value("${ultimate-iron.datasource.url}")
-	private String databaseUrl;
-	
-	@Value("${ultimate-iron.datasource.username}")
-	private String databaseUsername;
-	
-	@Value("${ultimate-iron.datasource.password}")
-	private String databasePassword;
-	
 	@Bean
+	@ConfigurationProperties(prefix = "ultimate-iron.datasource")
 	public DataSource dataSource() {
-		return DataSourceBuilder.create()
-				.driverClassName(databaseDriverClassName)
-				.url(databaseUrl)
-				.username(databaseUsername)
-				.password(databasePassword)
-				.build();
+		return DataSourceBuilder.create().build();
 	}
 	
 	@Bean
