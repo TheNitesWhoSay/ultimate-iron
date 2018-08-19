@@ -24,8 +24,8 @@ public class HiscoreSnapshot implements Serializable {
 	@Column(name = "SNAPSHOT_TS")
 	private Date snapshotTs;
 	
-	@Column(name = "SIGHTING_TS")
-	private Long sightingTs;
+	@Column(name = "USER_NAME_ID")
+	private Long userNameId;
 	
 	public HiscoreSnapshot() {
 		super();
@@ -43,11 +43,11 @@ public class HiscoreSnapshot implements Serializable {
 	public void setSnapshotTs(Date snapshotTs) {
 		this.snapshotTs = snapshotTs;
 	}
-	public Long getSightingTs() {
-		return sightingTs;
+	public Long getUserNameId() {
+		return userNameId;
 	}
-	public void setSightingTs(Long sightingTs) {
-		this.sightingTs = sightingTs;
+	public void setUserNameId(Long userNameId) {
+		this.userNameId = userNameId;
 	}
-	
+
 }

@@ -1,29 +1,16 @@
-package org.iron.ultimate.jpa.dao.model;
+package org.iron.ultimate.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+public class AccountTypeDTO implements Serializable {
 
-@Entity
-@Table(name = "DIR_ACCOUNT_TYPE")
-public class DirAccountType implements Serializable {
-	
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@Column(name = "ACCOUNT_TYPE_ID")
-	private Long accountTypeId;
 	
-	@Column(name = "ACCOUNT_TYPE")
+	private Long accountTypeId;
 	private String accountType;
-
-	@Column(name = "DISPLAY_NAME")
 	private String displayName;
 	
-	public DirAccountType() {
+	public AccountTypeDTO() {
 		super();
 	}
 
@@ -45,5 +32,5 @@ public class DirAccountType implements Serializable {
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
-
+	
 }

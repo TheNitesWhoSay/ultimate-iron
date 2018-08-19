@@ -17,15 +17,15 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping("/sighting")
-@Api(value = "Users Sighted Controller")
-public class SightingController {
+@RequestMapping("/rank/change")
+@Api(value = "Rank Change Controller")
+public class RankChangeController {
 
 	@Autowired
 	private SightingService sightingService;
 	
 	@RequestMapping(value = "/submit", method = RequestMethod.POST, produces = "application/json")
-	@ApiOperation(value = "Submit a list of sighted users", responseContainer = "List", response = SightingResponseDTO.class)
+	@ApiOperation(value = "Submit a list of rank changed users", responseContainer = "List", response = SightingResponseDTO.class)
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "Success", responseContainer = "List", response = SightingResponseDTO.class),
 		@ApiResponse(code = 400, message = "Bad Request"),
@@ -33,7 +33,7 @@ public class SightingController {
 		@ApiResponse(code = 404, message = "Not Found"),
 		@ApiResponse(code = 500, message = "Internal Server Error")
 	})
-	public List<SightingResponseDTO> recordSightedUsers(@RequestBody List<UserSightingDTO> sightedUserNames) {
-		return sightingService.sightUsers(sightedUserNames, true);
+	public List<SightingResponseDTO> recordRankChanges(@RequestBody List<UserSightingDTO> rankChanges) {
+		return sightingService.sightUsers(rankChanges, false);
 	}
 }

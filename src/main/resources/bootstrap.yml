@@ -12,7 +12,7 @@ endpoints.restart.enabled: ${ULTI_ENDPOINT_RESTART_ENABLED:false}
 spring:
   profiles: jj-local
 server:
-  port: 10020
+  port: ${ULTIMATE_IRON_PORT:10020}
 ultimate-iron.datasource:
   driverClassName: ${DB_DRIVERNAME:com.mysql.jdbc.Driver}
   url: ${ULTI_DB_CONNECTIONURL:jdbc:mysql://127.0.0.1:3306/ultimate_iron}
@@ -28,4 +28,29 @@ ultimate-iron.datasource:
 ultimate-iron.endpoint:
   username: ${ULTI_ENDPOINT_USERID:unknown}
   password: ${ULTI_ENDPOINT_PASSWORD:unknown}
-logging.file: logs/ultimate-iron.log
+ultimate-iron.discord.staff-ranks.webhook.id: ${ULTI_RANKS_HOOK_ID:unknown}
+ultimate-iron.discord.staff-ranks.webhook.token: ${ULTI_RANKS_HOOK_TOKEN:unknown}
+logging.file: ${LOG_FILE_PATH:logs/ultimate-iron.log}
+---
+spring:
+  profiles: jj-server
+server:
+  port: ${ULTIMATE_IRON_PORT:10020}
+ultimate-iron.datasource:
+  driverClassName: ${DB_DRIVERNAME:com.mysql.jdbc.Driver}
+  url: ${ULTI_DB_CONNECTIONURL:jdbc:mysql://127.0.0.1:3306/ultimate_iron}
+  username: ${ULTI_DB_USERID:unknown}
+  password: ${ULTI_DB_PASSWORD:unknown}
+  accessToUnderlyingConnectionAllowed: ${ACC_TO_UND_CONN_ALLOWED:true}
+  max-active: ${DB_MAXACTIVE:25}
+  max-idle: ${DB_MAXIDLE:1}
+  min-idle: ${DB_MAXIDLE:1}
+  initial-size: ${DB_INITIALSIZE:1}
+  validation-query: ${DB_VALIDATIONQUERY:SELECT 1 FROM DUAL}
+  test-on-borrow: ${DB_TESTONBORROW:true}
+ultimate-iron.endpoint:
+  username: ${ULTI_ENDPOINT_USERID:unknown}
+  password: ${ULTI_ENDPOINT_PASSWORD:unknown}
+ultimate-iron.discord.staff-ranks.webhook.id: ${ULTI_RANKS_HOOK_ID:unknown}
+ultimate-iron.discord.staff-ranks.webhook.token: ${ULTI_RANKS_HOOK_TOKEN:unknown}
+logging.file: ${LOG_FILE_PATH:logs/ultimate-iron.log}
