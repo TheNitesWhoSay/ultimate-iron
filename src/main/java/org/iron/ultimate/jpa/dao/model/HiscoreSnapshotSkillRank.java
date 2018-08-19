@@ -9,8 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "HISCORE_SNAPSHOT_SKILL")
-public class HiscoreSnapshotSkill implements Serializable {
+@Table(name = "HISCORE_SNAPSHOT_SKILL_RANK")
+public class HiscoreSnapshotSkillRank implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -22,18 +22,27 @@ public class HiscoreSnapshotSkill implements Serializable {
 		@Column(name = "HISCORE_SNAPSHOT_ID")
 		private Long hiscoreSnapshotId;
 
+		@Column(name = "ACCOUNT_TYPE_ID")
+		private Long accountTypeId;
+
 		@Column(name = "SKILL_ID")
 		private Long skillId;
 		
 		public Pk() {
 			super();
 		}
-		
+
 		public Long getHiscoreSnapshotId() {
 			return hiscoreSnapshotId;
 		}
 		public void setHiscoreSnapshotId(Long hiscoreSnapshotId) {
 			this.hiscoreSnapshotId = hiscoreSnapshotId;
+		}
+		public Long getAccountTypeId() {
+			return accountTypeId;
+		}
+		public void setAccountTypeId(Long accountTypeId) {
+			this.accountTypeId = accountTypeId;
 		}
 		public Long getSkillId() {
 			return skillId;
@@ -41,38 +50,30 @@ public class HiscoreSnapshotSkill implements Serializable {
 		public void setSkillId(Long skillId) {
 			this.skillId = skillId;
 		}
+		
 	}
 	
 	@EmbeddedId
 	private Pk pk;
+
+	@Column(name = "SKILL_RANK")
+	private Long skillRank;
 	
-	@Column(name = "SKILL_LEVEL")
-	private Long skillLevel;
-	
-	@Column(name = "SKILL_EXPERIENCE")
-	private Long skillExperience;
-	
-	public HiscoreSnapshotSkill() {
+	public HiscoreSnapshotSkillRank() {
 		super();
 	}
-	
+
 	public Pk getPk() {
 		return pk;
 	}
 	public void setPk(Pk pk) {
 		this.pk = pk;
 	}
-	public Long getSkillLevel() {
-		return skillLevel;
+	public Long getSkillRank() {
+		return skillRank;
 	}
-	public void setSkillLevel(Long skillLevel) {
-		this.skillLevel = skillLevel;
-	}
-	public Long getSkillExperience() {
-		return skillExperience;
-	}
-	public void setSkillExperience(Long skillExperience) {
-		this.skillExperience = skillExperience;
+	public void setSkillRank(Long skillRank) {
+		this.skillRank = skillRank;
 	}
 	
 }

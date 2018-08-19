@@ -1,7 +1,7 @@
 package org.iron.ultimate.service;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +13,8 @@ import org.iron.ultimate.jpa.dao.model.DirSkill;
 import org.iron.ultimate.jpa.dao.repository.DirAccountTypeRepository;
 import org.iron.ultimate.jpa.dao.repository.DirClanRankRepository;
 import org.iron.ultimate.jpa.dao.repository.DirSkillRepository;
+import org.iron.ultimate.model.AccountTypeDTO;
+import org.iron.ultimate.model.ClanRankDTO;
 import org.iron.ultimate.model.SkillDTO;
 import org.iron.ultimate.model.enums.HiscoreCategory;
 import org.iron.ultimate.model.mapper.ResourceMapper;
@@ -34,26 +36,31 @@ public class MetaDataService {
 	@Autowired
 	private DirClanRankRepository dirClanRankRepository;
 	
-	public Map<String, String> getAccountTypes() {
-		List<DirAccountType> dirAccountTypes = dirAccountTypeRepository.findAll();
-		Map<String, String> accountTypes = new LinkedHashMap<String, String>();
-		if ( dirAccountTypes != null ) {
-			for ( DirAccountType dirAccountType : dirAccountTypes ) {
-				accountTypes.put(dirAccountType.getAccountType(), dirAccountType.getDisplayName());
-			}
+	public Map<String, AccountTypeDTO> getAccountTypeMap() {
+		Map<String, AccountTypeDTO> getAccountTypeMap = new HashMap<String, AccountTypeDTO>();
+		List<AccountTypeDTO> accountTypes = getAccountTypes();
+		for ( AccountTypeDTO accountType : accountTypes ) {
+			getAccountTypeMap.put(accountType.getAccountType(), accountType);
 		}
-		return accountTypes;
+		return getAccountTypeMap;
 	}
 	
-	public Map<String, String> getClanRanks() {
-		List<DirClanRank> dirClanRanks = dirClanRankRepository.findAll();
-		Map<String, String> clanRanks = new LinkedHashMap<String, String>();
-		if ( dirClanRanks != null ) {
-			for ( DirClanRank dirClanRank : dirClanRanks ) {
-				clanRanks.put(dirClanRank.getRankName(), dirClanRank.getDisplayName());
-			}
+	public List<AccountTypeDTO> getAccountTypes() {
+		List<DirAccountType> dirAccountTypes = dirAccountTypeRepository.findAll();
+		if ( dirAccountTypes != null ) {
+			return resourceMapper.convertToAccountTypeDTO(dirAccountTypes);
+		} else {
+			return new ArrayList<AccountTypeDTO>();
 		}
-		return clanRanks;
+	}
+	
+	public List<ClanRankDTO> getClanRanks() {
+		List<DirClanRank> dirClanRanks = dirClanRankRepository.findAll();
+		if ( dirClanRanks != null ) {
+			return resourceMapper.convertToClanRankDTO(dirClanRanks);
+		} else {
+			return new ArrayList<ClanRankDTO>();
+		}
 	}
 	
 	public List<SkillDTO> getListOfSkills() {

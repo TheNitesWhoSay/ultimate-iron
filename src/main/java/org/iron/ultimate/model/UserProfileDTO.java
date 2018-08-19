@@ -9,15 +9,15 @@ public class UserProfileDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String username;
-	private String currentAccountType;
-	private String currentAccountTypeDisplayName;
+	private AccountTypeDTO currentAccountType;
 	private Long currentTotalLevel;
 	private Long currentTotalExperience;
+	private List<AccountTypeDTO> pastAccountTypes;
+	private List<AccountTypeDTO> relevantAccountTypes;
 	private Map<String, Long> accountTypeRanks;
-	private Map<String, String> pastAccountTypes;
 	private Map<String, Long> pastAccountTypeTotalLevels;
 	private Map<String, Long> pastAccountTypeTotalExperience;
-	private List<MultiHiscoreEntry> hiscores;
+	private Map<String, MultiHiscoreEntry> hiscores;
 	
 	public UserProfileDTO() {
 		super();
@@ -29,17 +29,11 @@ public class UserProfileDTO implements Serializable {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getCurrentAccountType() {
+	public AccountTypeDTO getCurrentAccountType() {
 		return currentAccountType;
 	}
-	public void setCurrentAccountType(String currentAccountType) {
+	public void setCurrentAccountType(AccountTypeDTO currentAccountType) {
 		this.currentAccountType = currentAccountType;
-	}
-	public String getCurrentAccountTypeDisplayName() {
-		return currentAccountTypeDisplayName;
-	}
-	public void setCurrentAccountTypeDisplayName(String currentAccountTypeDisplayName) {
-		this.currentAccountTypeDisplayName = currentAccountTypeDisplayName;
 	}
 	public Long getCurrentTotalLevel() {
 		return currentTotalLevel;
@@ -53,16 +47,22 @@ public class UserProfileDTO implements Serializable {
 	public void setCurrentTotalExperience(Long currentTotalExperience) {
 		this.currentTotalExperience = currentTotalExperience;
 	}
+	public List<AccountTypeDTO> getRelevantAccountTypes() {
+		return relevantAccountTypes;
+	}
+	public void setRelevantAccountTypes(List<AccountTypeDTO> relevantAccountTypes) {
+		this.relevantAccountTypes = relevantAccountTypes;
+	}
 	public Map<String, Long> getAccountTypeRanks() {
 		return accountTypeRanks;
 	}
 	public void setAccountTypeRanks(Map<String, Long> accountTypeRanks) {
 		this.accountTypeRanks = accountTypeRanks;
 	}
-	public Map<String, String> getPastAccountTypes() {
+	public List<AccountTypeDTO> getPastAccountTypes() {
 		return pastAccountTypes;
 	}
-	public void setPastAccountTypes(Map<String, String> pastAccountTypes) {
+	public void setPastAccountTypes(List<AccountTypeDTO> pastAccountTypes) {
 		this.pastAccountTypes = pastAccountTypes;
 	}
 	public Map<String, Long> getPastAccountTypeTotalLevels() {
@@ -77,11 +77,21 @@ public class UserProfileDTO implements Serializable {
 	public void setPastAccountTypeTotalExperience(Map<String, Long> pastAccountTypeTotalExperience) {
 		this.pastAccountTypeTotalExperience = pastAccountTypeTotalExperience;
 	}
-	public List<MultiHiscoreEntry> getHiscores() {
+	public Map<String, MultiHiscoreEntry> getHiscores() {
 		return hiscores;
 	}
-	public void setHiscores(List<MultiHiscoreEntry> hiscores) {
+	public void setHiscores(Map<String, MultiHiscoreEntry> hiscores) {
 		this.hiscores = hiscores;
+	}
+
+	@Override
+	public String toString() {
+		return "UserProfileDTO [username=" + username + ", currentAccountType=" + currentAccountType
+				+ ", currentTotalLevel=" + currentTotalLevel + ", currentTotalExperience=" + currentTotalExperience
+				+ ", pastAccountTypes=" + pastAccountTypes + ", relevantAccountTypes=" + relevantAccountTypes
+				+ ", accountTypeRanks=" + accountTypeRanks + ", pastAccountTypeTotalLevels="
+				+ pastAccountTypeTotalLevels + ", pastAccountTypeTotalExperience=" + pastAccountTypeTotalExperience
+				+ ", hiscores=" + hiscores + "]";
 	}
 	
 }

@@ -35,7 +35,7 @@ public class SightingService {
 	@Autowired
 	private DirClanRankRepository dirClanRankRepository;
 	
-	public List<SightingResponseDTO> sightUsers(List<UserSightingDTO> usersSighted) {
+	public List<SightingResponseDTO> sightUsers(List<UserSightingDTO> usersSighted, boolean createSightingAndUser) {
 		
 		for ( UserSightingDTO userSighted : usersSighted ) {
 			if ( userSighted != null ) {
@@ -132,16 +132,24 @@ public class SightingService {
 							boolean updatedRank = false;
 							String existingClanRank = rsClanMember.getRankName();
 							if ( clanRank != null && !clanRank.isEmpty() && !existingClanRank.equals(clanRank) ) {
-								rsClanMember.setRankName(existingClanRank);
+								rsClanMember.setRankName(clanRank);
 								clanMembersToUpdate.add(rsClanMember);
 								updatedRank = true;
 							}
 							Long userNameId = rsUserName.getUserNameId();
 							userSightingsToAdd.add(new UserSighting(clanRank, userNameId));
 							if ( updatedRank ) {
-								sightingResponseDtos.add(new SightingResponseDTO(username, clanRank, "User already existed, updated rank and activity."));
+								if ( createSightingAndUser ) {
+									sightingResponseDtos.add(new SightingResponseDTO(username, clanRank, "User already existed, updated rank and activity."));
+								} else {
+									sightingResponseDtos.add(new SightingResponseDTO(username, clanRank, "User already existed, updated rank."));
+								}
 							} else {
-								sightingResponseDtos.add(new SightingResponseDTO(username, clanRank, "User already existed, updated activity."));
+								if ( createSightingAndUser ) {
+									sightingResponseDtos.add(new SightingResponseDTO(username, clanRank, "User already existed, updated activity."));
+								} else {
+									sightingResponseDtos.add(new SightingResponseDTO(username, clanRank, "No change to user."));
+								}
 							}
 						} else if ( rsUserName != null ) {
 							Long userNameId = rsUserName.getUserNameId();
@@ -150,7 +158,11 @@ public class SightingService {
 						} else {
 							rsUserNamesToAdd.add(new RsUserName(username));
 							toAddUserNameRanks.put(username, clanRank);
-							sightingResponseDtos.add(new SightingResponseDTO(username, clanRank, "User not found, added as new user, queued to check for name changes."));
+							if ( createSightingAndUser ) {
+								sightingResponseDtos.add(new SightingResponseDTO(username, clanRank, "User not found, added as new user, queued to check for name changes."));
+							} else {
+								sightingResponseDtos.add(new SightingResponseDTO(username, clanRank, "User not found, please add a sighting before changing their rank!"));
+							}
 						}
 					}
 				}
@@ -160,7 +172,7 @@ public class SightingService {
 				rsClanMemberRespository.save(clanMembersToUpdate);
 			}
 			
-			if ( rsUserNamesToAdd != null && !rsUserNamesToAdd.isEmpty() ) {
+			if ( createSightingAndUser && rsUserNamesToAdd != null && !rsUserNamesToAdd.isEmpty() ) {
 				rsUserNamesToAdd = rsUserNameRepository.save(rsUserNamesToAdd);
 				if ( rsUserNamesToAdd != null && !rsUserNamesToAdd.isEmpty() ) {
 					for ( RsUserName rsUserName : rsUserNamesToAdd ) {
@@ -172,7 +184,7 @@ public class SightingService {
 				}
 			}
 			
-			if ( userSightingsToAdd != null && !userSightingsToAdd.isEmpty() ) {
+			if ( createSightingAndUser && userSightingsToAdd != null && !userSightingsToAdd.isEmpty() ) {
 				userSightingsToAdd = userSightingRepository.save(userSightingsToAdd);
 			}
 		}

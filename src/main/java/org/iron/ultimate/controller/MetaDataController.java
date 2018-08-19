@@ -1,8 +1,9 @@
 package org.iron.ultimate.controller;
 
 import java.util.List;
-import java.util.Map;
 
+import org.iron.ultimate.model.AccountTypeDTO;
+import org.iron.ultimate.model.ClanRankDTO;
 import org.iron.ultimate.model.SkillDTO;
 import org.iron.ultimate.service.MetaDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,28 +25,28 @@ public class MetaDataController {
 	private MetaDataService metaDataService;
 	
 	@RequestMapping(value = "/account/types", method = RequestMethod.GET, produces = "application/json")
-	@ApiOperation(value = "Get a list of account types and their descriptions", response = Map.class)
+	@ApiOperation(value = "Get a list of account types and their descriptions", responseContainer = "List", response = AccountTypeDTO.class)
 	@ApiResponses(value = {
-		@ApiResponse(code = 200, message = "Success", responseContainer = "Map", response = Map.class),
+		@ApiResponse(code = 200, message = "Success", responseContainer = "List", response = AccountTypeDTO.class),
 		@ApiResponse(code = 400, message = "Bad Request"),
 		@ApiResponse(code = 401, message = "Unauthorized"),
 		@ApiResponse(code = 404, message = "Not Found"),
 		@ApiResponse(code = 500, message = "Internal Server Error")
 	})
-	public Map<String, String> getAccountTypes() {
+	public List<AccountTypeDTO> getAccountTypes() {
 		return metaDataService.getAccountTypes();
 	}
 	
 	@RequestMapping(value = "/ranks", method = RequestMethod.GET, produces = "application/json")
-	@ApiOperation(value = "Get a list of clan ranks and their descriptions", response = Map.class)
+	@ApiOperation(value = "Get a list of clan ranks and their descriptions", response = ClanRankDTO.class)
 	@ApiResponses(value = {
-		@ApiResponse(code = 200, message = "Success", response = Map.class),
+		@ApiResponse(code = 200, message = "Success", response = ClanRankDTO.class),
 		@ApiResponse(code = 400, message = "Bad Request"),
 		@ApiResponse(code = 401, message = "Unauthorized"),
 		@ApiResponse(code = 404, message = "Not Found"),
 		@ApiResponse(code = 500, message = "Internal Server Error")
 	})
-	public Map<String, String> getClanRanks() {
+	public List<ClanRankDTO> getClanRanks() {
 		return metaDataService.getClanRanks();
 	}
 	
