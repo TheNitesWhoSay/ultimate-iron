@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.iron.ultimate.exception.MethodFailureException;
 import org.iron.ultimate.exception.UserNotFoundException;
+import org.iron.ultimate.model.AccountTypeDTO;
 import org.iron.ultimate.model.HiscoreEntry;
 import org.iron.ultimate.model.MultiHiscoreEntry;
 import org.iron.ultimate.model.PrettyMultiHiscoreEntry;
@@ -145,44 +146,47 @@ public class HiscoreService {
 		boolean wasUltimate = ultimateHiscores != null;
 		boolean wasHardcore = hardcoreHiscores != null;
 		boolean wasIronman = ironmanHiscores != null && !isUltimate && !isHardcore;
-		
-		Map<String, String> allAccountTypes = metaDataService.getAccountTypes();
+				
+		Map<String, AccountTypeDTO> accountTypeMap = metaDataService.getAccountTypeMap();
 		AccountType currentType = isUltimate ? AccountType.ULTIMATE : (isHardcore ? AccountType.HARDCORE : (isIronman ? AccountType.IRONMAN : AccountType.REGULAR));
-		userProfileDto.setCurrentAccountType(currentType.name());
-		userProfileDto.setCurrentAccountTypeDisplayName(allAccountTypes.get(currentType.name()));
+		userProfileDto.setCurrentAccountType(accountTypeMap.get(currentType.name()));
 		
-		Map<String, String> pastAccountTypes = new LinkedHashMap<String, String>();
+		List<AccountTypeDTO> pastAccountTypes = new ArrayList<AccountTypeDTO>();
 		if ( wasUltimate && currentType != AccountType.ULTIMATE ) {
-			String displayName = allAccountTypes.get(AccountType.ULTIMATE.name());
-			pastAccountTypes.put(AccountType.ULTIMATE.name(), displayName);
+			pastAccountTypes.add(accountTypeMap.get(AccountType.ULTIMATE.name()));
 		}
 		if ( wasHardcore && currentType != AccountType.HARDCORE ) {
-			String displayName = allAccountTypes.get(AccountType.HARDCORE.name());
-			pastAccountTypes.put(AccountType.HARDCORE.name(), displayName);
+			pastAccountTypes.add(accountTypeMap.get(AccountType.HARDCORE.name()));
 		}
 		if ( wasIronman && currentType != AccountType.IRONMAN ) {
-			String displayName = allAccountTypes.get(AccountType.IRONMAN.name());
-			pastAccountTypes.put(AccountType.IRONMAN.name(), displayName);
+			pastAccountTypes.add(accountTypeMap.get(AccountType.IRONMAN.name()));
 		}
 		userProfileDto.setPastAccountTypes(pastAccountTypes);
 		
+		List<AccountTypeDTO> relevantAccountTypes = new ArrayList<AccountTypeDTO>();
 		Map<String, List<HiscoreEntry>> accountTypeHiscores = new LinkedHashMap<String, List<HiscoreEntry>>();
+		relevantAccountTypes.add(accountTypeMap.get(AccountType.REGULAR.name()));
 		accountTypeHiscores.put(AccountType.REGULAR.name(), regularHiscores);
 		if ( ironmanHiscores != null ) {
+			relevantAccountTypes.add(accountTypeMap.get(AccountType.IRONMAN.name()));
 			accountTypeHiscores.put(AccountType.IRONMAN.name(), ironmanHiscores);
 		}
 		if ( hardcoreHiscores != null ) {
+			relevantAccountTypes.add(accountTypeMap.get(AccountType.HARDCORE.name()));
 			accountTypeHiscores.put(AccountType.HARDCORE.name(), hardcoreHiscores);
 		}
 		if ( ultimateHiscores != null ) {
+			relevantAccountTypes.add(accountTypeMap.get(AccountType.ULTIMATE.name()));
 			accountTypeHiscores.put(AccountType.ULTIMATE.name(), ultimateHiscores);
 		}
+		userProfileDto.setRelevantAccountTypes(relevantAccountTypes);
 		
-		List<MultiHiscoreEntry> multiHiscores = getMultiHiscore(accountTypeHiscores, pastAccountTypes.keySet());
+		Map<String, MultiHiscoreEntry> multiHiscores = getMultiHiscore(accountTypeHiscores, pastAccountTypes);
 		userProfileDto.setHiscores(multiHiscores);
 		
-		for ( MultiHiscoreEntry multiHiscore : multiHiscores ) {
-			String skillName = multiHiscore.getSkillName();
+		Set<String> skillNames = multiHiscores.keySet();
+		for ( String skillName : skillNames ) {
+			MultiHiscoreEntry multiHiscore = multiHiscores.get(skillName);
 			if ( skillName != null && skillName.equalsIgnoreCase(Skill.OVERALL.name()) ) {
 				userProfileDto.setCurrentTotalLevel(multiHiscore.getLevel());
 				userProfileDto.setCurrentTotalExperience(multiHiscore.getExperience());
@@ -199,12 +203,12 @@ public class HiscoreService {
 		
 		UserProfileDTO userProfile = getUserProfile(username);
 		
-		Map<String, String> allAccountTypes = metaDataService.getAccountTypes();
+		Map<String, AccountTypeDTO> accountTypeMap = metaDataService.getAccountTypeMap();
 		
 		PrettyUserProfileDTO prettyUserProfile = new PrettyUserProfileDTO();
 		
 		prettyUserProfile.setUsername(userProfile.getUsername());
-		prettyUserProfile.setAccountType(userProfile.getCurrentAccountTypeDisplayName());
+		prettyUserProfile.setAccountType(userProfile.getCurrentAccountType().getDisplayName());
 		prettyUserProfile.setTotalLevel(userProfile.getCurrentTotalLevel());
 		prettyUserProfile.setTotalExperience(userProfile.getCurrentTotalExperience());
 		
@@ -212,14 +216,17 @@ public class HiscoreService {
 		Set<String> rankedAccountTypes = accountTypeRanks.keySet();
 		Map<String, Long> prettyAccountTypeRanks = new LinkedHashMap<String, Long>();
 		for ( String rankedAccountType : rankedAccountTypes ) {
-			String displayName = allAccountTypes.get(rankedAccountType);
+			String displayName = accountTypeMap.get(rankedAccountType).getDisplayName();
 			Long rank = accountTypeRanks.get(rankedAccountType);
 			prettyAccountTypeRanks.put(displayName, rank);
 		}
 		prettyUserProfile.setAccountTypeRanks(prettyAccountTypeRanks);
 		
-		Map<String, String> pastAccountTypesToDisplayNames = userProfile.getPastAccountTypes();
-		Set<String> pastAccountTypes = pastAccountTypesToDisplayNames.keySet();
+		List<AccountTypeDTO> pastAccountTypeDtos = userProfile.getPastAccountTypes();
+		Set<String> pastAccountTypes = new LinkedHashSet<String>();
+		for ( AccountTypeDTO pastAccountTypeDto : pastAccountTypeDtos ) {
+			pastAccountTypes.add(pastAccountTypeDto.getAccountType());
+		}
 		List<String> prettyPastAccountTypes = new ArrayList<String>();
 		
 		Map<String, Long> pastAccountTypeTotalLevels = userProfile.getPastAccountTypeTotalLevels();
@@ -228,7 +235,7 @@ public class HiscoreService {
 		Map<String, Long> prettyPastAccountTypeTotalExperience = new LinkedHashMap<String, Long>();
 		
 		for ( String pastAccountType : pastAccountTypes ) {
-			String displayName = allAccountTypes.get(pastAccountType);
+			String displayName = accountTypeMap.get(pastAccountType).getDisplayName();
 			prettyPastAccountTypes.add(displayName);
 			
 			Long total = pastAccountTypeTotalLevels.get(pastAccountType);
@@ -242,9 +249,11 @@ public class HiscoreService {
 		prettyUserProfile.setPastAccountTypeTotalLevels(prettyPastAccountTypeTotalLevels);
 		prettyUserProfile.setPastAccountTypeTotalExperience(prettyPastAccountTypeTotalExperience);
 		
-		List<MultiHiscoreEntry> hiscores = userProfile.getHiscores();
+		Map<String, MultiHiscoreEntry> hiscores = userProfile.getHiscores();
+		Set<String> skillNames = hiscores.keySet();
 		Map<String, PrettyMultiHiscoreEntry> prettyMultiHiscoreEntries = new LinkedHashMap<String, PrettyMultiHiscoreEntry>();
-		for ( MultiHiscoreEntry hiscore : hiscores ) {
+		for ( String skillName : skillNames ) {
+			MultiHiscoreEntry hiscore = hiscores.get(skillName);
 			PrettyMultiHiscoreEntry prettyHiscore = new PrettyMultiHiscoreEntry();
 			prettyMultiHiscoreEntries.put(hiscore.getDisplayName(), prettyHiscore);
 			prettyHiscore.setLevel(hiscore.getLevel());
@@ -254,7 +263,7 @@ public class HiscoreService {
 			Map<String, Long> prettyEntryAccountTypeRanks = new LinkedHashMap<String, Long>();
 			Set<String> accountTypesWithRank = entryAccountTypeRanks.keySet();
 			for ( String accountTypeWithRank : accountTypesWithRank ) {
-				String displayName = allAccountTypes.get(accountTypeWithRank);
+				String displayName = accountTypeMap.get(accountTypeWithRank).getDisplayName();
 				Long rank = entryAccountTypeRanks.get(accountTypeWithRank);
 				prettyEntryAccountTypeRanks.put(displayName, rank);
 			}
@@ -265,7 +274,7 @@ public class HiscoreService {
 			Map<String, Long> prettyPastAccountTypeLevels = new LinkedHashMap<String, Long>();
 			Map<String, Long> prettyPastAccountTypeExperience = new LinkedHashMap<String, Long>();
 			for ( String pastAccountType : pastAccountTypes ) {
-				String displayName = allAccountTypes.get(pastAccountType);
+				String displayName = accountTypeMap.get(pastAccountType).getDisplayName();
 				Long level = pastAccountTypeLevels.get(pastAccountType);
 				if ( level != null && level >= 0 ) {
 					prettyPastAccountTypeLevels.put(displayName, level);
@@ -283,7 +292,12 @@ public class HiscoreService {
 		return prettyUserProfile;
 	}
 
-	private List<MultiHiscoreEntry> getMultiHiscore(Map<String, List<HiscoreEntry>> accountTypeHiscores, Set<String> pastAccountTypes) {
+	private Map<String, MultiHiscoreEntry> getMultiHiscore(Map<String, List<HiscoreEntry>> accountTypeHiscores, List<AccountTypeDTO> pastAccountTypeDtos) {
+		
+		Set<String> pastAccountTypes = new LinkedHashSet<String>();
+		for ( AccountTypeDTO pastAccountTypeDto : pastAccountTypeDtos ) {
+			pastAccountTypes.add(pastAccountTypeDto.getAccountType());
+		}
 		
 		Set<String> accountTypes = accountTypeHiscores.keySet();
 		List<HiscoreEntry> regularHiscores = accountTypeHiscores.get(AccountType.REGULAR.name());
@@ -298,14 +312,15 @@ public class HiscoreService {
 			}
 		}
 		
-		List<MultiHiscoreEntry> multiHiscores = new ArrayList<MultiHiscoreEntry>();
+		Map<String, MultiHiscoreEntry> multiHiscores = new LinkedHashMap<String, MultiHiscoreEntry>();
 		int totalEntries = regularHiscores.size();
 		for ( int i=0; i<totalEntries; i++ ) {
 			MultiHiscoreEntry multiHiscoreEntry = new MultiHiscoreEntry();
 			HiscoreEntry regularEntry = regularHiscores.get(i);
+			String skillName = regularEntry.getSkillName();
 			
 			multiHiscoreEntry.setSkillId(regularEntry.getSkillId());
-			multiHiscoreEntry.setSkillName(regularEntry.getSkillName());
+			multiHiscoreEntry.setSkillName(skillName);
 			multiHiscoreEntry.setDisplayName(regularEntry.getDisplayName());
 			multiHiscoreEntry.setAbbreviation(regularEntry.getAbbreviation());
 			multiHiscoreEntry.setLiteIndex(regularEntry.getLiteIndex());
@@ -355,7 +370,7 @@ public class HiscoreService {
 			multiHiscoreEntry.setPastAccountTypeLevels(pastAccountTypeLevels);
 			multiHiscoreEntry.setPastAccountTypeExperience(pastAccountTypeExperiences);
 			
-			multiHiscores.add(multiHiscoreEntry);
+			multiHiscores.put(skillName, multiHiscoreEntry);
 		}
 		return multiHiscores;
 	}
