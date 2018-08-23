@@ -139,9 +139,9 @@ public class HiscoreService {
 			}
 		}
 		
-		boolean isUltimate = isCurrentlyMoreMetal(ultimateHiscores, regularHiscores);
-		boolean isHardcore = isCurrentlyMoreMetal(hardcoreHiscores, regularHiscores);
-		boolean isIronman = isCurrentlyMoreMetal(ironmanHiscores, regularHiscores);
+		boolean isUltimate = isEqualOrMoreMetal(ultimateHiscores, regularHiscores);
+		boolean isHardcore = isEqualOrMoreMetal(hardcoreHiscores, regularHiscores);
+		boolean isIronman = isEqualOrMoreMetal(ironmanHiscores, regularHiscores);
 		
 		boolean wasUltimate = ultimateHiscores != null;
 		boolean wasHardcore = hardcoreHiscores != null;
@@ -375,7 +375,7 @@ public class HiscoreService {
 		return multiHiscores;
 	}
 	
-	private boolean isCurrentlyMoreMetal(List<HiscoreEntry> moreMetalType, List<HiscoreEntry> lessMetalType) {
+	private boolean isEqualOrMoreMetal(List<HiscoreEntry> moreMetalType, List<HiscoreEntry> lessMetalType) {
 		if ( moreMetalType == null && lessMetalType == null ) {
 			return true;
 		} else if ( moreMetalType == null || lessMetalType == null ) {
