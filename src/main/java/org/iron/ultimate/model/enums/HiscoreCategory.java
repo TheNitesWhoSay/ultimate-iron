@@ -14,14 +14,14 @@ public enum HiscoreCategory {
 		this.urlComponent = urlComponent;
 		this.accountType = accountType;
 	}
-	
-	@Override
-	public String toString() {
-		return urlComponent;
-	}
 
 	public AccountType getAccountType() {
 		return accountType;
+	}
+
+	@Override
+	public String toString() {
+		return urlComponent;
 	}
 	
 }
