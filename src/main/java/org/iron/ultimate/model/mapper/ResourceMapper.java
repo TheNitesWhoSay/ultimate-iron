@@ -28,6 +28,7 @@ public class ResourceMapper {
 	public ClanRankDTO convertToClanRankDTO(DirClanRank dirClanRanks) {
 		return mapperFacade.map(dirClanRanks, ClanRankDTO.class);
 	}
+	
 	public List<ClanRankDTO> convertToClanRankDTO(List<DirClanRank> dirClanRanks) {
 		return mapperFacade.mapAsList(dirClanRanks, ClanRankDTO.class);
 	}
