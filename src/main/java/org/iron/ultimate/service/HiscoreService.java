@@ -28,11 +28,11 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class HiscoreService {
-
+	
 	@Autowired
 	private MetaDataService metaDataService;
 	
-	private static final String hiscoreLiteUrlStart = "http://services.runescape.com/m=";
+	private static final String hiscoreLiteUrlStart = "https://services.runescape.com/m=";
 	private static final String hiscoreLiteUrlMid = "/index_lite.ws?player=";
 
 	public String getRawHiscores(HiscoreCategory category, String username) throws UserNotFoundException {
@@ -53,11 +53,11 @@ public class HiscoreService {
 		List<HiscoreEntry> userHiscoreEntries = new ArrayList<HiscoreEntry>();
 		List<SkillDTO> hiscoreSkills = metaDataService.getListOfSkills();
 		
-		String rawHiscoresLiteDate = getRawHiscores(category, username);
-		if ( rawHiscoresLiteDate != null && !rawHiscoresLiteDate.isEmpty() ) {
-			rawHiscoresLiteDate = rawHiscoresLiteDate.replaceAll("\r\n", " ");
-			rawHiscoresLiteDate = rawHiscoresLiteDate.replaceAll("\n", " ");
-			String[] liteHiscoreTuples = rawHiscoresLiteDate.split(" ");
+		String rawHiscoresLiteData = getRawHiscores(category, username);
+		if ( rawHiscoresLiteData != null && !rawHiscoresLiteData.isEmpty() ) {
+			rawHiscoresLiteData = rawHiscoresLiteData.replaceAll("\r\n", " ");
+			rawHiscoresLiteData = rawHiscoresLiteData.replaceAll("\n", " ");
+			String[] liteHiscoreTuples = rawHiscoresLiteData.split(" ");
 			if ( liteHiscoreTuples != null ) {
 				for ( int i=0; i<liteHiscoreTuples.length; i++ ) {
 					
@@ -80,7 +80,7 @@ public class HiscoreService {
 						}
 					}
 					
-					if ( experience != null ) {
+					if ( experience != null && i < hiscoreSkills.size() ) {
 						SkillDTO skillDto = hiscoreSkills.get(i);
 						userHiscoreEntries.add(new HiscoreEntry(skillDto, rank, level, experience));
 					}
